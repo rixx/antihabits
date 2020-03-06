@@ -140,6 +140,37 @@ main > div {
 #dialogue.hidden {
   display: none;
 }
+#dialogue > * {
+  margin: 8px;
+}
+#dialogue .actions {
+  display: flex;
+  justify-content: flex-end;
+}
+#dialogue .actions button {
+  margin: 8px;
+  padding: 4px 8px;
+  border: 1px solid;
+  border-radius: 3px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+button#abort {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border-color: #383d41;
+}
+button#delete {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #721c24;
+}
+button#save {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #155724;
+}
 
 @media (max-width: 800px) {
   main {
