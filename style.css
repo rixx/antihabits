@@ -185,3 +185,8 @@ button#save {
     flex-direction: column;
   }
 }
+@media print {
+  #all-tasks, #center, #agenda .subtitle {
+    display: none;
+  }
+}
