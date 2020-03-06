@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+      <title>antihabit</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Habits don't work for me, so let's mix things up.">
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+    <link rel="canonical" href="https://antihabit.rixx.de/">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/antihabit.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Antihabit</h1>
+    <div id="subtitle">Randomize your day</div>
+  </header>
+  <nav>
+  </nav>
+  <main>
+    <div class="column" id="all-tasks">
+      <div class="card" id="add-new">➕ Add new task</div>
+    </div>
+    <div id="center">
+      <div id="action">
+        <p>➡</p>
+        <p>Plan my day!</p>
+      </div>
+    </div>
+    <div class="column" id="agenda">
+      <h1>Agenda</h1>
+      <div id="agenda-missing">Add tasks, then let me plan your day!</div>
+      <ol></ol>
+    </div>
+  </main>
+  <div id="dialogue" class="hidden">
+    <label for="name">Name</label><input type="text" id="name">
+    <p>
+      <input type="checkbox" name="optional" id="optional">
+      <label for="optional">Optional</label>
+    </p>
+    <p>
+      <input type="checkbox" name="one-off" id="one-off">
+      <label for="one-off">One-off</label>
+    </p>
+    <div class="actions">
+      <button id="abort">Abort</button>
+      <button id="delete" class="hidden">Delete</button>
+      <button id="save">Save</button>
+    </div>
+  </div>
+  <footer>
+  </footer>
+</body>
+</html>

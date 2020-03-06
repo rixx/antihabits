@@ -1,0 +1,148 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+ul[class],
+ol[class] {
+  padding: 0;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+  font-family: sans-serif;
+}
+
+ul[class], ol[class] {
+  list-style: none;
+}
+
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+article > * + * {
+  margin-top: 1em;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+.hidden { display: none }
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main {
+  display: flex;
+  flex-direction: row;  /* TODO media */
+  align-items: stretch;
+}
+
+main > div {
+  flex: 1 1 0px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  margin: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+#center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#center #action {
+  display: flex;
+  flex-direction: column;
+  font-size: 30px;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  cursor: pointer;
+}
+.column h1 {
+  text-align: center;
+}
+
+.column .card {
+  cursor: pointer;
+  margin: 4px;
+  padding: 8px;
+}
+
+.column .card.task {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: #0c5460 solid 1px;
+  border-radius: 5px;
+}
+
+.column .card.optional {
+  background-color: #d4edda;
+  border-color: #155724;
+  color: #155724;
+}
+.column .card.one-off {
+  background-color: #fff3cd;
+  border-color: #856404;
+  color: #856404;
+}
+
+#dialogue {
+  position: absolute;
+  top: 20%;
+  width: 400px;
+  margin-left: -200px;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  z-index: 300;
+  background: white;
+  padding: 32px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 20px -2px rgba(0,0,0,0.65);
+}
+#dialogue.hidden {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  main {
+    flex-direction: column;
+  }
+}
