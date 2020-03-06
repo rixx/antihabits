@@ -1,6 +1,6 @@
 let TASKS = {}
 let CURRENT_EDIT = null
-let STATE = "normal"  // can be normal or dialogue
+let STATE = "normal"  // can be normal or dialog
 let AGENDA = []
 let MAXID = 1
 
@@ -28,34 +28,34 @@ let loadTasks = () => {
 let saveTasks = () => {
     localStorage.setItem("tasks", JSON.stringify(TASKS))
 }
-let updateDialogue = () => {
-    const dialogue = document.querySelector("#dialogue")
-    if (STATE === "dialogue")
-        dialogue.classList.remove("hidden")
+let updateDialog = () => {
+    const dialog = document.querySelector("#dialog")
+    if (STATE === "dialog")
+        dialog.classList.remove("hidden")
     else
-        dialogue.classList.add("hidden")
+        dialog.classList.add("hidden")
 }
-let showDialogue = () => {
-    STATE = "dialogue"
+let showDialog = () => {
+    STATE = "dialog"
     if (CURRENT_EDIT) {
         const currentTask = TASKS[CURRENT_EDIT]
-        document.querySelector("#dialogue #name").value = currentTask.name
-        document.querySelector("#dialogue #optional").checked = currentTask.optional
-        document.querySelector("#dialogue #one-off").checked = currentTask.oneOff
-        document.querySelector("#dialogue #delete").classList.remove("hidden")
+        document.querySelector("#dialog #name").value = currentTask.name
+        document.querySelector("#dialog #optional").checked = currentTask.optional
+        document.querySelector("#dialog #one-off").checked = currentTask.oneOff
+        document.querySelector("#dialog #delete").classList.remove("hidden")
     }
-    updateDialogue()
+    updateDialog()
 }
-let abortDialogue = () => {
+let abortDialog = () => {
     STATE = "normal"
     CURRENT_EDIT = null
-    document.querySelector("#dialogue #name").value = ""
-    document.querySelector("#dialogue #optional").checked = false
-    document.querySelector("#dialogue #one-off").checked = false
-    document.querySelector("#dialogue #delete").classList.add("hidden")
-    updateDialogue()
+    document.querySelector("#dialog #name").value = ""
+    document.querySelector("#dialog #optional").checked = false
+    document.querySelector("#dialog #one-off").checked = false
+    document.querySelector("#dialog #delete").classList.add("hidden")
+    updateDialog()
 }
-let saveDialogue = () => {
+let saveDialog = () => {
     let currentTask = null
     if (CURRENT_EDIT) {
         currentTask = TASKS[CURRENT_EDIT]
@@ -63,21 +63,21 @@ let saveDialogue = () => {
         MAXID += 1
         currentTask = {id: MAXID}
     }
-    currentTask.name = document.querySelector("#dialogue #name").value
-    currentTask.optional = document.querySelector("#dialogue #optional").checked
-    currentTask.oneOff = document.querySelector("#dialogue #one-off").checked ? getCurrentDate() : false
+    currentTask.name = document.querySelector("#dialog #name").value
+    currentTask.optional = document.querySelector("#dialog #optional").checked
+    currentTask.oneOff = document.querySelector("#dialog #one-off").checked ? getCurrentDate() : false
     TASKS[currentTask.id] = currentTask
     console.log(TASKS)
     saveTasks()
-    abortDialogue()
+    abortDialog()
     updateDisplay()
 }
-let deleteDialogue = () => {
+let deleteDialog = () => {
     if (CURRENT_EDIT) {
         delete TASKS[CURRENT_EDIT]
     }
     saveTasks()
-    abortDialogue()
+    abortDialog()
     updateDisplay()
 }
 editTask = (e) => {
@@ -86,11 +86,11 @@ editTask = (e) => {
         target = target.parentElement
     }
     CURRENT_EDIT = target.id
-    showDialogue()
+    showDialog()
 }
 
 let updateDisplay = () => {
-    updateDialogue()
+    updateDialog()
     document.querySelectorAll("#all-tasks .task").forEach(e => e.parentNode.removeChild(e))
     Object.values(TASKS).forEach(task => {
         const taskBox = document.createElement("div")
@@ -121,7 +121,7 @@ let updateDisplay = () => {
 }
 let generateAgenda = () => {
     if (!Object.keys(TASKS).length) {
-        showDialogue()
+        showDialog()
         alert("Cannot generate agenda without tasks, add one first!")
         return
     }
@@ -141,10 +141,21 @@ let generateAgenda = () => {
 
 let initEventListeners = () => {
     document.querySelector("#action").addEventListener("click", generateAgenda)
-    document.querySelector("#add-new").addEventListener("click", showDialogue)
-    document.querySelector("#save").addEventListener("click", saveDialogue)
-    document.querySelector("#abort").addEventListener("click", abortDialogue)
-    document.querySelector("#delete").addEventListener("click", deleteDialogue)
+    document.querySelector("#add-new").addEventListener("click", showDialog)
+    document.querySelector("#save").addEventListener("click", saveDialog)
+    document.querySelector("#abort").addEventListener("click", abortDialog)
+    document.querySelector("#delete").addEventListener("click", deleteDialog)
+    document.onkeyup = (e) => {
+        if (STATE === "dialog") {
+            e = e || window.event
+            const charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+            if (charCode == 27) {
+                abortDialog()
+            } else if (charCode == 13) {
+                saveDialog()
+            }
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
