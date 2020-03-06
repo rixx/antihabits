@@ -16,6 +16,9 @@ let loadTasks = () => {
         Object.entries(TASKS).forEach(entry => {
             const key = entry[0]
             const value = entry[1]
+            if (value.done && value.done !== currentDate) {
+                value.done = false
+            }
             if (value.oneOff && value.oneOff !== currentDate) {
                 delete TASKS[key]
             }
@@ -88,6 +91,16 @@ editTask = (e) => {
     CURRENT_EDIT = target.id
     showDialog()
 }
+toggleDone = (e) => {
+    let target = e.target
+    while (!target.dataset.id) {
+        target = target.parentElement
+    }
+    TASKS[target.dataset.id].done = TASKS[target.dataset.id].done ? false : getCurrentDate()
+    saveTasks()
+    updateDisplay()
+    redrawAgenda()
+}
 
 let updateDisplay = () => {
     updateDialog()
@@ -115,8 +128,26 @@ let updateDisplay = () => {
             marker.appendChild(markerContent)
             taskBox.appendChild(marker)
         }
+        if (task.done && task.done === getCurrentDate()) {
+            taskBox.classList.add("done")
+        }
         document.querySelector("#all-tasks").appendChild(taskBox)
         taskBox.addEventListener("click", editTask)
+    })
+}
+let redrawAgenda = () => {
+    document.querySelectorAll("#agenda ol li").forEach(e => e.parentNode.removeChild(e))
+    AGENDA.forEach(task => {
+        const taskBox = document.createElement("li")
+        const taskContent = document.createTextNode(task.name)
+        taskBox.appendChild(taskContent)
+        taskBox.id = "agenda" + task.id
+        taskBox.dataset.id = task.id
+        if (task.done && task.done === getCurrentDate()) {
+            taskBox.classList.add("done")
+        }
+        taskBox.addEventListener("click", toggleDone)
+        document.querySelector("#agenda ol").appendChild(taskBox)
     })
 }
 let generateAgenda = () => {
@@ -126,17 +157,19 @@ let generateAgenda = () => {
         return
     }
     document.querySelector("#agenda-missing").classList.add("hidden")
-    document.querySelectorAll("#agenda ol li").forEach(e => e.parentNode.removeChild(e))
     AGENDA = Object.values(TASKS).filter(task => {
         return !task.optional || Math.random() > 0.4
     })
-    AGENDA.sort(() => 0.5 - Math.random())
-    AGENDA.forEach(task => {
-        const taskBox = document.createElement("li")
-        const taskContent = document.createTextNode(task.name)
-        taskBox.appendChild(taskContent)
-        document.querySelector("#agenda ol").appendChild(taskBox)
+    AGENDA.sort((task1, task2) => {
+        if (task1.done && task1.done === getCurrentDate()) {
+            return -task1.id
+        }
+        if (task2.done && task2.done === getCurrentDate()) {
+            return task2.id
+        }
+        return 0.5 - Math.random()
     })
+    redrawAgenda()
 }
 
 let initEventListeners = () => {

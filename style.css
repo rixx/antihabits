@@ -72,7 +72,9 @@ main {
 main > div {
   flex: 1 1 0px;
 }
-
+.subtitle {
+  font-style: italic;
+}
 .column {
   display: flex;
   flex-direction: column;
@@ -95,7 +97,7 @@ main > div {
   color: #aaa;
   cursor: pointer;
 }
-.column h1 {
+.column h1, .column .subtitle {
   text-align: center;
 }
 
@@ -170,6 +172,12 @@ button#save {
   background-color: #d4edda;
   color: #155724;
   border-color: #155724;
+}
+#agenda ol li {
+  cursor: pointer;
+}
+#agenda ol li.done, .task.done {
+  text-decoration: line-through;
 }
 
 @media (max-width: 800px) {
