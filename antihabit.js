@@ -8,7 +8,7 @@ let getCurrentDate = () => {
     const d = new Date()
     return d.toISOString().substr(0, 10)
 }
-let loadTasks = () => {
+let loadData = () => {
     TASKS = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : {}
     TASKS = TASKS || {}
     if (TASKS && Object.keys(TASKS) && Object.keys(TASKS).length) {
@@ -27,9 +27,17 @@ let loadTasks = () => {
     } else {
         MAXID = 1
     }
+    let agendaData = localStorage.getItem("agenda") ? JSON.parse(localStorage.getItem("agenda")) : {}
+    agendaData = agendaData || {}
+    if (agendaData && agendaData[getCurrentDate()]) {
+        AGENDA = agendaData[getCurrentDate()]
+    }
 }
-let saveTasks = () => {
+let saveData = () => {
     localStorage.setItem("tasks", JSON.stringify(TASKS))
+    let agendaData = {}
+    agendaData[getCurrentDate()] = AGENDA
+    localStorage.setItem("agenda", JSON.stringify(agendaData))
 }
 let updateDialog = () => {
     const dialog = document.querySelector("#dialog")
@@ -71,7 +79,7 @@ let saveDialog = () => {
     currentTask.oneOff = document.querySelector("#dialog #one-off").checked ? getCurrentDate() : false
     TASKS[currentTask.id] = currentTask
     console.log(TASKS)
-    saveTasks()
+    saveData()
     abortDialog()
     updateDisplay()
 }
@@ -79,7 +87,7 @@ let deleteDialog = () => {
     if (CURRENT_EDIT) {
         delete TASKS[CURRENT_EDIT]
     }
-    saveTasks()
+    saveData()
     abortDialog()
     updateDisplay()
 }
@@ -97,7 +105,7 @@ toggleDone = (e) => {
         target = target.parentElement
     }
     TASKS[target.dataset.id].done = TASKS[target.dataset.id].done ? false : getCurrentDate()
-    saveTasks()
+    saveData()
     updateDisplay()
     redrawAgenda()
 }
@@ -136,8 +144,13 @@ let updateDisplay = () => {
     })
 }
 let redrawAgenda = () => {
+    if (AGENDA.length) {
+        document.querySelector("#agenda-missing").classList.add("hidden")
+    }
     document.querySelectorAll("#agenda ol li").forEach(e => e.parentNode.removeChild(e))
-    AGENDA.forEach(task => {
+    AGENDA.forEach(taskID => {
+        const task = TASKS[taskID]
+        if (!task) return
         const taskBox = document.createElement("li")
         const taskContent = document.createTextNode(task.name)
         taskBox.appendChild(taskContent)
@@ -156,11 +169,10 @@ let generateAgenda = () => {
         alert("Cannot generate agenda without tasks, add one first!")
         return
     }
-    document.querySelector("#agenda-missing").classList.add("hidden")
-    AGENDA = Object.values(TASKS).filter(task => {
+    let agendaList = Object.values(TASKS).filter(task => {
         return !task.optional || Math.random() > 0.4
     })
-    AGENDA.sort((task1, task2) => {
+    agendaList.sort((task1, task2) => {
         if (task1.done && task1.done === getCurrentDate()) {
             return -task1.id
         }
@@ -169,6 +181,8 @@ let generateAgenda = () => {
         }
         return 0.5 - Math.random()
     })
+    AGENDA = agendaList.map(task => task.id)
+    saveData()
     redrawAgenda()
 }
 
@@ -193,9 +207,11 @@ let initEventListeners = () => {
 
 document.addEventListener("DOMContentLoaded", function() {
     initEventListeners()
-    loadTasks()
-    if (Object.keys(TASKS).length) {
+    loadData()
+    if (Object.keys(TASKS).length && !AGENDA.length) {
         generateAgenda()
+    } else {
+        redrawAgenda()
     }
     updateDisplay()
 })
