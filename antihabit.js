@@ -144,10 +144,14 @@ let updateDisplay = () => {
     })
 }
 let redrawAgenda = () => {
+    document.querySelectorAll("#agenda ol li").forEach(e => e.parentNode.removeChild(e))
+    document.querySelectorAll("#agenda .subtitle span").forEach(e => e.parentNode.removeChild(e))
     if (AGENDA.length) {
         document.querySelector("#agenda-missing").classList.add("hidden")
+    } else {
+        return
     }
-    document.querySelectorAll("#agenda ol li").forEach(e => e.parentNode.removeChild(e))
+    let doneTasks = 0
     AGENDA.forEach(taskID => {
         const task = TASKS[taskID]
         if (!task) return
@@ -158,10 +162,15 @@ let redrawAgenda = () => {
         taskBox.dataset.id = task.id
         if (task.done && task.done === getCurrentDate()) {
             taskBox.classList.add("done")
+            doneTasks += 1
         }
         taskBox.addEventListener("click", toggleDone)
         document.querySelector("#agenda ol").appendChild(taskBox)
     })
+    const progressBox = document.createElement("span")
+    const progressContent = document.createTextNode(" (" + doneTasks + "/" + AGENDA.length + ")")
+    progressBox.appendChild(progressContent)
+    document.querySelector("#agenda .subtitle").appendChild(progressBox)
 }
 let generateAgenda = () => {
     if (!Object.keys(TASKS).length) {
