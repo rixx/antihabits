@@ -172,24 +172,25 @@ let redrawAgenda = () => {
     progressBox.appendChild(progressContent)
     document.querySelector("#agenda .subtitle").appendChild(progressBox)
 }
+let shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 let generateAgenda = () => {
     if (!Object.keys(TASKS).length) {
         showDialog()
         alert("Cannot generate agenda without tasks, add one first!")
         return
     }
+    const currentDate = getCurrentDate()
     let agendaList = Object.values(TASKS).filter(task => {
-        return !task.optional || Math.random() > 0.4
+        return (!task.optional || Math.random() > 0.4) && (!(task.done === currentDate))
     })
-    agendaList.sort((task1, task2) => {
-        if (task1.done && task1.done === getCurrentDate()) {
-            return -task1.id
-        }
-        if (task2.done && task2.done === getCurrentDate()) {
-            return task2.id
-        }
-        return 0.5 - Math.random()
-    })
+    const doneList = Object.values(TASKS).filter(task => task.done === currentDate)
+    shuffleArray(agendaList)
+    agendaList = doneList.concat(agendaList)
     AGENDA = agendaList.map(task => task.id)
     saveData()
     redrawAgenda()
